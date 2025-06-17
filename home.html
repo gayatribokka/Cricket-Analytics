@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Analytics Using Machine Learning 🏏</title>
+    <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/3163/3163508.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/5f3f547070.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a, #4f46e5);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .container {
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            margin: 1rem;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-input, select.form-input {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-input:focus, select.form-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        .myButton {
+            width: 100%;
+            padding: 1rem;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .myButton:hover {
+            background: #4338ca;
+        }
+        .prediction-result {
+            background: #fefcbf;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 600;
+            color: #1f2937;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Website Title -->
+        <div class="text-center">
+            <h2 class="text-4xl font-bold text-gray-800 mb-2">
+                <span class="heading_first">Cricket Analytics Using Machine Learning 🏏</span>
+            </h2>
+            <p class="text-xl text-gray-600">Project - IPL Score Predictor</p>
+        </div>
+
+        <!-- Prediction Result -->
+        <div class="prediction-result">
+            <h4 class="text-lg">{{ val }}</h4>
+        </div>
+
+        <!-- Prediction Form -->
+        <div class="mt-8">
+            <form action="predict" method="POST" class="space-y-4">
+                <!-- Batting Team Dropdown -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700"><i class="fas fa-users mr-2"></i>Batting Team</label>
+                    <select class="form-input" name="batting-team" required>
+                        <option value="none">--- Select a Batting Team ---</option>
+                        <option value="Mumbai Indians">Mumbai Indians</option>
+                        <option value="Kolkata Knight Riders">Kolkata Knight Riders</option>
+                        <option value="Chennai Super Kings">Chennai Super Kings</option>
+                        <option value="Rajasthan Royals">Rajasthan Royals</option>
+                        <option value="Kings XI Punjab">Kings XI Punjab</option>
+                        <option value="Royal Challengers Bangalore">Royal Challengers Bangalore</option>
+                        <option value="Delhi Capitals">Delhi Capitals</option>
+                        <option value="Sunrisers Hyderabad">Sunrisers Hyderabad</option>
+                    </select>
+                </div>
+
+                <!-- Bowling Team Dropdown -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700"><i class="fas fa-bowling-ball mr-2"></i>Bowling Team</label>
+                    <select class="form-input" name="bowling-team" required>
+                        <option value="none">--- Select a Bowling Team ---</option>
+                        <option value="Mumbai Indians">Mumbai Indians</option>
+                        <option value="Kolkata Knight Riders">Kolkata Knight Riders</option>
+                        <option value="Chennai Super Kings">Chennai Super Kings</option>
+                        <option value="Rajasthan Royals">Rajasthan Royals</option>
+                        <option value="Kings XI Punjab">Kings XI Punjab</option>
+                        <option value="Royal Challengers Bangalore">Royal Challengers Bangalore</option>
+                        <option value="Delhi Capitals">Delhi Capitals</option>
+                        <option value="Sunrisers Hyderabad">Sunrisers Hyderabad</option>
+                    </select>
+                </div>
+
+                <!-- Venue -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700"><i class="fas fa-stadium mr-2"></i>Venue</label>
+                    <select class="form-input" name="venue" required>
+                        <option value="none">--- Select a Venue ---</option>
+                        <option value="ACA-VDCA Stadium, Visakhapatnam">ACA-VDCA Stadium, Visakhapatnam</option>
+                        <option value="Barabati Stadium, Cuttack">Barabati Stadium, Cuttack</option>
+                        <option value="Dr DY Patil Sports Academy, Mumbai">Dr DY Patil Sports Academy, Mumbai</option>
+                        <option value="Dubai International Cricket Stadium, Dubai">Dubai International Cricket Stadium, Dubai</option>
+                        <option value="Eden Gardens, Kolkata">Eden Gardens, Kolkata</option>
+                        <option value="Feroz Shah Kotla, Delhi">Feroz Shah Kotla, Delhi</option>
+                        <option value="Himachal Pradesh Cricket Association Stadium, Dharamshala">Himachal Pradesh Cricket Association Stadium, Dharamshala</option>
+                        <option value="Holkar Cricket Stadium, Indore">Holkar Cricket Stadium, Indore</option>
+                        <option value="JSCA International Stadium Complex, Ranchi">JSCA International Stadium Complex, Ranchi</option>
+                        <option value="M Chinnaswamy Stadium, Bangalore">M Chinnaswamy Stadium, Bangalore</option>
+                        <option value="MA Chidambaram Stadium, Chepauk">MA Chidambaram Stadium, Chepauk</option>
+                        <option value="Maharashtra Cricket Association Stadium, Pune">Maharashtra Cricket Association Stadium, Pune</option>
+                        <option value="Punjab Cricket Association Stadium, Mohali">Punjab Cricket Association Stadium, Mohali</option>
+                        <option value="Raipur International Cricket Stadium, Raipur">Raipur International Cricket Stadium, Raipur</option>
+                        <option value="Rajiv Gandhi International Stadium, Uppal">Rajiv Gandhi International Stadium, Uppal</option>
+                        <option value="Sardar Patel Stadium, Motera">Sardar Patel Stadium, Motera</option>
+                        <option value="Sawai Mansingh Stadium, Jaipur">Sawai Mansingh Stadium, Jaipur</option>
+                        <option value="Sharjah Cricket Stadium, Sharjah">Sharjah Cricket Stadium, Sharjah</option>
+                        <option value="Sheikh Zayed Stadium, Abu-Dhabi">Sheikh Zayed Stadium, Abu-Dhabi</option>
+                        <option value="Wankhede Stadium, Mumbai">Wankhede Stadium, Mumbai</option>
+                    </select>
+                </div>
+
+                <!-- Overs -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700"><i class="fas fa-clock mr-2"></i>Overs (>= 5.0)</label>
+                    <input class="form-input" type="text" name="overs" placeholder="e.g., 7.2" required>
+                </div>
+
+                <!-- Runs -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700"><i class="fas fa-tachometer-alt mr-2"></i>Runs</label>
+                    <input class="form-input" type="text" name="runs" placeholder="e.g., 64" required>
+                </div>
+
+                <!-- Wickets -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700"><i class="fas fa-flag mr-2"></i>Wickets</label>
+                    <input class="form-input" type="text" name="wickets" placeholder="e.g., 4" required>
+                </div>
+
+                <!-- Runs in Previous 5 Overs -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700"><i class="fas fa-chart-line mr-2"></i>Runs in Previous 5 Overs</label>
+                    <input class="form-input" type="text" name="runs_in_prev_5" placeholder="e.g., 42" required>
+                </div>
+
+                <!-- Wickets in Previous 5 Overs -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700"><i class="fas fa-exclamation-triangle mr-2"></i>Wickets in Previous 5 Overs</label>
+                    <input class="form-input" type="text" name="wickets_in_prev_5" placeholder="e.g., 3" required>
+                </div>
+
+                <!-- Submit Button -->
+                <div>
+                    <input type="submit" class="myButton" value="Predict Score">
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
